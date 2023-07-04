@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+# rpk container start
+# export REDPANDA_BROKERS="127.0.0.1:62555"
+rpk topic create demo
+
+# rpk cluster config set superusers "['admin']" --api-urls $REDPANDA_API_ADMIN_ADDRS
+# rpk acl user create admin -p 'buildtrust' --api-urls $REDPANDA_API_ADMIN_ADDRS
+# rpk cluster config set kafka_enable_authorization true --api-urls $REDPANDA_API_ADMIN_ADDRS
+# rpk cluster config set enable_sasl true --api-urls $REDPANDA_API_ADMIN_ADDRS

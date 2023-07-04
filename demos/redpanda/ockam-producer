@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+PRODUCER_TOKEN=$(ockam project ticket --attribute role=member)
+NAME="producer"
+
+ockam identity create "$NAME"_identity
+ockam project enroll $PRODUCER_TOKEN --identity "$NAME"_identity
+ockam node create "$NAME"_node --identity "$NAME"_identity
+ockam kafka-producer create --at "$NAME"_node
+
+
+export JAVA_HOME=/opt/homebrew/opt/openjdk
+kafka-console-producer --topic demo \
+  --bootstrap-server localhost:5000 \
+  --producer.config vanilla.config

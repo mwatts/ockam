@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+
+export JAVA_HOME=/opt/homebrew/opt/openjdk
+kafka-console-consumer --topic demo \
+  --bootstrap-server $REDPANDA_BROKERS \
+  --consumer.config plain.config
