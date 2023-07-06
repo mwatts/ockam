@@ -1,17 +1,20 @@
 #!/usr/bin/env sh
 
-ockam project addon configure confluent \
-  --bootstrap-server $CONFLUENT_BROKER_HOST
-
 CONSUMER_TOKEN=$(ockam project ticket --attribute role=member)
 
 NAME="consumer"
 ockam identity create "$NAME"_identity
 ockam project enroll $CONSUMER_TOKEN --identity "$NAME"_identity
 ockam node create "$NAME"_node --identity "$NAME"_identity
-ockam kafka-consumer create --at "$NAME"_node
+ockam kafka-consumer create \
+  --at "$NAME"_node \
+  --project-route /project/default/service/forward_to_broker/secure/api/service/kafka_bootstrap
+
+# ockam tcp-inlet create \
+#   --at /node/"$NAME"_node --from 127.0.0.1:4200 \
+#   --to /project/default/service/forward_to_broker/secure/api/service/kafka_bootstrap
 
 export JAVA_HOME=/opt/homebrew/opt/openjdk
 kafka-console-consumer --topic demo \
   --bootstrap-server localhost:4000 \
-  --consumer.config vanilla.config
+  --consumer.config plain.config

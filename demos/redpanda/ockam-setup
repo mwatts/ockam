@@ -9,14 +9,6 @@ OCKAM_BROKER_TOKEN=$(ockam project ticket --attribute component=kafkabroker)
 ockam identity create "$NAME"_identity
 ockam project enroll $OCKAM_BROKER_TOKEN --identity "$NAME"_identity
 ockam node create $NAME --identity "$NAME"_identity
-
-ockam tcp-outlet create \
-  --at /node/$NAME \
-  --from /service/outlet \
-  --to $REDPANDA_BROKERS
-
+ockam kafka-outlet create --bootstrap-server $REDPANDA_BROKERS --at $NAME
 ockam relay create broker --at /project/default --to "/node/$NAME"
 
-# TODO: This doesn't work
-ockam project addon configure confluent \
-  --bootstrap-server /project/default/service/forward_to_broker/secure/api/service/outlet

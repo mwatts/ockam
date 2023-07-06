@@ -6,10 +6,17 @@ NAME="producer"
 ockam identity create "$NAME"_identity
 ockam project enroll $PRODUCER_TOKEN --identity "$NAME"_identity
 ockam node create "$NAME"_node --identity "$NAME"_identity
-ockam kafka-producer create --at "$NAME"_node
+# ockam tcp-inlet create \
+#   --at /node/"$NAME"_node --from 127.0.0.1:4200 \
+#   --to /project/default/service/forward_to_broker/secure/api/service/kafka_bootstrap
+
+ockam kafka-producer create \
+  --at "$NAME"_node \
+  --project-route /project/default/service/forward_to_broker/secure/api/service/kafka_bootstrap
+
 
 
 export JAVA_HOME=/opt/homebrew/opt/openjdk
 kafka-console-producer --topic demo \
   --bootstrap-server localhost:5000 \
-  --producer.config vanilla.config
+  --producer.config plain.config
