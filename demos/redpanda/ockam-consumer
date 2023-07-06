@@ -8,7 +8,7 @@ ockam project enroll $CONSUMER_TOKEN --identity "$NAME"_identity
 ockam node create "$NAME"_node --identity "$NAME"_identity
 ockam kafka-consumer create \
   --at "$NAME"_node \
-  --project-route /project/default/service/forward_to_broker/secure/api/service/kafka_bootstrap
+  --project-route /project/default/service/forward_to_broker/secure/api
 
 # ockam tcp-inlet create \
 #   --at /node/"$NAME"_node --from 127.0.0.1:4200 \
