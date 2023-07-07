@@ -8,7 +8,7 @@ _But why would I want to do that?!_
 A message bus can be a very convenient way to move data from one place to 
 somewhere else. Sometimes that convenience means that it's tempting to send 
 data that shoud be kept private (e.g., PII) via your broker. And while the 
-communication to and fromer the broker is possible encrypted over TLS, the 
+communication to and from the broker is possibly encrypted over TLS, the 
 message is now in plaintext within the broker itself. Which means anyone who
 can gain access to the topic now or in the future can read the content of
 all those messages. Ockam solves that, without any code changes to producers or 
