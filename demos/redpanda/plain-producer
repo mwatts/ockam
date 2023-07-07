@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-
-export JAVA_HOME=/opt/homebrew/opt/openjdk
-kafka-console-producer --topic demo \
-  --bootstrap-server $REDPANDA_BROKERS \
-  --producer.config plain.config

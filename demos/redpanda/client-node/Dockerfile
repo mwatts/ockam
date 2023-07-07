@@ -18,7 +18,8 @@ RUN mirror=$(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_j
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/build-trust/ockam/develop/install.sh | bash
 ENV PATH "/root/.ockam/bin:/sbin:/opt/kafka/bin/:$PATH"
-COPY ./ockam.sh /ockam.sh
-RUN chmod +x /ockam.sh
+COPY ./consumer.sh /consumer.sh
+RUN chmod +x /consumer.sh
+COPY ./producer.sh /producer.sh
+RUN chmod +x /producer.sh
 
-ENTRYPOINT ["/ockam.sh"]
