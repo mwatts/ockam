@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+export OCKAM_BROKER_TICKET=$(ockam project ticket)
+export OCKAM_CONSUMER_TICKET=$(ockam project ticket)
+docker compose up consumer

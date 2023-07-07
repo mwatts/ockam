@@ -1,20 +1,17 @@
 #!/usr/bin/env sh
 
-CONSUMER_TOKEN=$(ockam project ticket --attribute role=member)
+CONSUMER_TICKET=$(ockam project ticket --attribute role=member)
 
 NAME="consumer"
 ockam identity create "$NAME"_identity
-ockam project enroll $CONSUMER_TOKEN --identity "$NAME"_identity
+ockam project enroll $CONSUMER_TICKET --identity "$NAME"_identity
 ockam node create "$NAME"_node --identity "$NAME"_identity
 ockam kafka-consumer create \
   --at "$NAME"_node \
-  --project-route /project/default/service/forward_to_broker/secure/api
-
-# ockam tcp-inlet create \
-#   --at /node/"$NAME"_node --from 127.0.0.1:4200 \
-#   --to /project/default/service/forward_to_broker/secure/api/service/kafka_bootstrap
+  --project-route /ip4/127.0.0.1/tcp/6000/secure/api
 
 export JAVA_HOME=/opt/homebrew/opt/openjdk
+echo "Starting console consumer..."
 kafka-console-consumer --topic demo \
-  --bootstrap-server localhost:4000 \
+  --bootstrap-server 127.0.0.1:4000 \
   --consumer.config plain.config

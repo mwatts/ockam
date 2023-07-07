@@ -1,14 +1,12 @@
 #!/usr/bin/env sh
-NAME="kafkabroker"
 
 ockam reset
 ockam enroll
 
-OCKAM_BROKER_TOKEN=$(ockam project ticket --attribute component=kafkabroker)
+OCKAM_BROKER_TICKET=$(ockam project ticket)
 
-ockam identity create "$NAME"_identity
-ockam project enroll $OCKAM_BROKER_TOKEN --identity "$NAME"_identity
-ockam node create $NAME --identity "$NAME"_identity
-ockam kafka-outlet create --bootstrap-server $REDPANDA_BROKERS --at $NAME
-ockam relay create broker --at /project/default --to "/node/$NAME"
-
+ockam identity create 
+ockam project enroll $OCKAM_BROKER_TICKET 
+ockam node create --tcp-listener-address 0.0.0.0:6000
+ockam kafka-outlet create \
+  --bootstrap-server $REDPANDA_BROKERS
