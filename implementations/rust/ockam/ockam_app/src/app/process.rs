@@ -3,7 +3,7 @@ use tracing::error;
 
 use crate::ctx::TauriCtx;
 use crate::enroll::DefaultBackend;
-use crate::{enroll, quit, tcp};
+use crate::{enroll, invite, quit, tcp};
 
 /// This is the function dispatching events for the SystemTray
 pub fn process_system_tray_event(app: &AppHandle<Wry>, event: SystemTrayEvent) {
@@ -14,6 +14,8 @@ pub fn process_system_tray_event(app: &AppHandle<Wry>, event: SystemTrayEvent) {
             tcp::outlet::TCP_OUTLET_CREATE_MENU_ID => tcp::outlet::on_create(ctx),
             enroll::RESET_MENU_ID => enroll::on_reset(DefaultBackend, ctx),
             quit::QUIT_MENU_ID => quit::on_quit(ctx),
+            #[cfg(feature = "invite")]
+            invite::INVITES_MENU_ID => invite::on_manage(ctx),
             _ => Ok(()),
         };
         if let Err(e) = result {

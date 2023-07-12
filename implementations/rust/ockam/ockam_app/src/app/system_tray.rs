@@ -1,5 +1,6 @@
 use crate::ctx::TauriCtx;
 use crate::enroll::EnrollActions;
+use crate::invite::InviteTrayMenuSection;
 use crate::quit::QuitActions;
 use crate::tcp::outlet::TcpOutletActions;
 use crate::Result;
@@ -9,6 +10,7 @@ use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 /// Separate groups of related functions with a native separator.
 pub struct SystemTrayMenuBuilder {
     enroll: EnrollActions,
+    invite: InviteTrayMenuSection,
     tcp: TcpOutletActions,
     quit: QuitActions,
 }
@@ -21,18 +23,28 @@ impl SystemTrayMenuBuilder {
 
     pub fn init() -> Self {
         let enroll = EnrollActions::new();
+        let invite = InviteTrayMenuSection::new();
         let tcp = TcpOutletActions::new();
         let quit = QuitActions::new();
-        Self { enroll, tcp, quit }
+        Self {
+            enroll,
+            invite,
+            tcp,
+            quit,
+        }
     }
 
     /// Create a `SystemTrayMenu` instance, adding the menu items in the expected order.
     pub fn build(self) -> SystemTrayMenu {
-        SystemTrayMenu::new()
+        let menu = SystemTrayMenu::new()
             .add_menu_items(&[self.enroll.enroll])
             .add_native_item(SystemTrayMenuItem::Separator)
-            .add_menu_items(&self.tcp.menu_items)
+            .add_menu_items(&self.tcp.menu_items);
+        #[cfg(feature = "invite")]
+        let menu = menu
             .add_native_item(SystemTrayMenuItem::Separator)
+            .add_menu_items(&[self.invite.header, self.invite.manage_invites]);
+        menu.add_native_item(SystemTrayMenuItem::Separator)
             .add_menu_items(&[self.enroll.reset, self.quit.quit])
     }
 
@@ -45,9 +57,16 @@ impl SystemTrayMenuBuilder {
 
     fn get_full_menu(ctx: &TauriCtx) -> Result<SystemTrayMenu> {
         let enroll = EnrollActions::new();
+        let invite = InviteTrayMenuSection::new();
         let tcp = TcpOutletActions::full(ctx)?;
         let quit = QuitActions::new();
-        let menu = Self { enroll, tcp, quit }.build();
+        let menu = Self {
+            enroll,
+            invite,
+            tcp,
+            quit,
+        }
+        .build();
         Ok(menu)
     }
 }
