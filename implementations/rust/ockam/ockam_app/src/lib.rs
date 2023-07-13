@@ -1,3 +1,5 @@
+use invite::{InviteState, ReceivedInvite, SentInvite};
+use tauri::async_runtime::RwLock;
 use tauri::{Manager, SystemTray};
 use tauri_plugin_log::{Target, TargetKind};
 
@@ -9,6 +11,8 @@ mod app;
 mod ctx;
 mod enroll;
 mod error;
+#[cfg(feature = "invite")]
+mod invite;
 mod quit;
 mod tcp;
 
@@ -31,6 +35,8 @@ pub fn run() {
             app.listen_global(app::events::SYSTEM_TRAY_ON_UPDATE, move |_event| {
                 let _ = SystemTrayMenuBuilder::refresh(&ctx.clone());
             });
+            let invite_state: InviteState<ReceivedInvite, SentInvite> = InviteState::default();
+            app.manage(RwLock::new(invite_state));
             app.trigger_global(app::events::SYSTEM_TRAY_ON_UPDATE, None);
             Ok(())
         })
